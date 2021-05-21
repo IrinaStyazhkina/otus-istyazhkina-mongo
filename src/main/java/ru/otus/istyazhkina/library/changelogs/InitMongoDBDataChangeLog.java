@@ -18,9 +18,9 @@ import java.util.List;
 @ChangeLog(order = "001")
 public class InitMongoDBDataChangeLog {
 
-    List<Author> authors = new ArrayList<>();
-    List<Genre> genres = new ArrayList<>();
-    List<Book> books = new ArrayList<>();
+    private final List<Author> authors = new ArrayList<>();
+    private final List<Genre> genres = new ArrayList<>();
+    private final List<Book> books = new ArrayList<>();
 
     @ChangeSet(order = "000", id = "dropDB", author = "irinastyazhkina", runAlways = true)
     public void dropDB(MongoDatabase mongoDatabase) {

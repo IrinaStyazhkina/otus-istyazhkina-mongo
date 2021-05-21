@@ -50,13 +50,14 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public Book addNewBook(String bookTitle, String authorName, String authorSurname, String genreName) {
-        if (authorRepository.findByNameAndSurname(authorName, authorSurname).isEmpty()) {
-            authorRepository.save(new Author(authorName, authorSurname));
-        }
-        if (genreRepository.findByName(genreName).isEmpty()) {
-            genreRepository.save(new Genre(genreName));
-        }
-        Book book = new Book(bookTitle, authorRepository.findByNameAndSurname(authorName, authorSurname).get(), genreRepository.findByName(genreName).get());
+        Author author = authorRepository
+                .findByNameAndSurname(authorName, authorSurname)
+                .orElseGet(() -> authorRepository.save(new Author(authorName, authorSurname)));
+
+        Genre genre = genreRepository.findByName(genreName)
+                .orElseGet(() -> genreRepository.save(new Genre(genreName)));
+
+        Book book = new Book(bookTitle, author, genre);
         bookRepository.save(book);
         return book;
     }

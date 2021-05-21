@@ -9,4 +9,5 @@ public interface AuthorRepository extends MongoRepository<Author, String> {
 
     Optional<Author> findByNameAndSurname(String name, String surname);
 
+    boolean existsByNameAndSurname(String name, String surname);
 }

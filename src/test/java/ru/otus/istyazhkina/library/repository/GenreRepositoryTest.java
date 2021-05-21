@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.istyazhkina.library.domain.Genre;
 import ru.otus.istyazhkina.library.events.MongoGenreOperationsEventListener;
@@ -15,6 +18,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 
 @DataMongoTest
 @Import(MongoGenreOperationsEventListener.class)
@@ -22,6 +27,9 @@ class GenreRepositoryTest {
 
     @Autowired
     private GenreRepository genreRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Test
     void shouldReturnGenreForExistingId() {
@@ -76,7 +84,7 @@ class GenreRepositoryTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldUpdateExistingGenre() {
         String genreId = "2136";
-        Genre genreFromDB = genreRepository.findById(genreId).get();
+        Genre genreFromDB = findGenreById(genreId);
 
         Genre infoToUpdate = new Genre(genreId, "science fiction");
         Genre result = genreRepository.save(infoToUpdate);
@@ -97,18 +105,25 @@ class GenreRepositoryTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldDeleteExistingGenreIfNoBookIsBound() {
-        Optional<Genre> genreFromDB = genreRepository.findById("2137");
-        assertThat(genreFromDB).isPresent();
+        String genreId = "2137";
+        Genre genreFromDB = findGenreById(genreId);
+        assertThat(genreFromDB).isNotNull();
         assertThat(genreRepository.count()).isEqualTo(4);
 
-        genreRepository.deleteById("2137");
+        genreRepository.deleteById(genreId);
         assertThat(genreRepository.count()).isEqualTo(3);
-        assertThat(genreRepository.findById("2137")).isEmpty();
+        assertThat(findGenreById(genreId)).isNull();
     }
 
     @Test
     void shouldNotDeleteExistingAuthorIfBookIsBound() {
         assertThatThrownBy(() -> genreRepository.deleteById("2134")).isInstanceOf(IllegalDeleteOperationException.class)
                 .hasMessage("Can not delete genre because exists book with this genre");
+    }
+
+    private Genre findGenreById(String id) {
+        Aggregation aggregation = newAggregation(match(Criteria.where("id").is(id)));
+        List<Genre> mappedResults = mongoTemplate.aggregate(aggregation, Genre.class, Genre.class).getMappedResults();
+        return mappedResults.size() == 1 ? mappedResults.get(0) : null;
     }
 }

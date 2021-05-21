@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.istyazhkina.library.domain.Author;
 import ru.otus.istyazhkina.library.events.MongoAuthorOperationsEventListener;
@@ -15,6 +18,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 
 
 @DataMongoTest
@@ -23,6 +28,9 @@ class AuthorRepositoryTest {
 
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Test
     void shouldReturnAuthorForExistingId() {
@@ -81,7 +89,7 @@ class AuthorRepositoryTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldUpdateExistingAuthor() {
         String authorId = "12346";
-        Author authorFromDB = authorRepository.findById(authorId).get();
+        Author authorFromDB = findAuthorById(authorId);
 
         Author infoToUpdate = new Author(authorId, "Aleksander", "Pushkin");
         Author result = authorRepository.save(infoToUpdate);
@@ -102,18 +110,25 @@ class AuthorRepositoryTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldDeleteExistingAuthorIfNoBookIsBound() {
-        Optional<Author> authorFromDB = authorRepository.findById("12348");
-        assertThat(authorFromDB).isPresent();
+        String authorId = "12348";
+        Author authorFromDB = findAuthorById(authorId);
+        assertThat(authorFromDB).isNotNull();
         assertThat(authorRepository.count()).isEqualTo(4);
 
-        authorRepository.deleteById("12348");
+        authorRepository.deleteById(authorId);
         assertThat(authorRepository.count()).isEqualTo(3);
-        assertThat(authorRepository.findById("12348")).isEmpty();
+        assertThat(findAuthorById(authorId)).isNull();
     }
 
     @Test
     void shouldNotDeleteExistingAuthorIfBookIsBound() {
         assertThatThrownBy(() -> authorRepository.deleteById("12345")).isInstanceOf(IllegalDeleteOperationException.class)
                 .hasMessage("Can not delete author because exists book with this author");
+    }
+
+    private Author findAuthorById(String id) {
+        Aggregation aggregation = newAggregation(match(Criteria.where("id").is(id)));
+        List<Author> mappedResults = mongoTemplate.aggregate(aggregation, Author.class, Author.class).getMappedResults();
+        return mappedResults.size() == 1 ? mappedResults.get(0) : null;
     }
 }

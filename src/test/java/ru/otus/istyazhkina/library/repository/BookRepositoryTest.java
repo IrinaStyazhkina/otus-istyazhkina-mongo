@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.istyazhkina.library.domain.Author;
 import ru.otus.istyazhkina.library.domain.Book;
@@ -15,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 
 @DataMongoTest
 @Import(MongoBookOperationsEventListener.class)
@@ -25,6 +30,9 @@ class BookRepositoryTest {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Test
     void shouldReturnBookForExistingId() {
@@ -76,7 +84,7 @@ class BookRepositoryTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldUpdateTitleOfExistingBook() {
         String bookId = "45632";
-        Book bookFromDB = bookRepository.findById(bookId).get();
+        Book bookFromDB = findBookById(bookId);
 
         Book infoToUpdate = new Book(bookId, "Anna Karenina", bookFromDB.getAuthor(), bookFromDB.getGenre());
         Book result = bookRepository.save(infoToUpdate);
@@ -88,13 +96,14 @@ class BookRepositoryTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldDeleteExistingBook() {
-        Optional<Book> bookFromDB = bookRepository.findById("45633");
-        assertThat(bookFromDB).isPresent();
+        String bookId = "45633";
+        Book bookFromDB = findBookById(bookId);
+        assertThat(bookFromDB).isNotNull();
         assertThat(bookRepository.count()).isEqualTo(3);
 
-        bookRepository.deleteById("45633");
+        bookRepository.deleteById(bookId);
         assertThat(bookRepository.count()).isEqualTo(2);
-        assertThat(bookRepository.findById("45633")).isEmpty();
+        assertThat(findBookById(bookId)).isNull();
     }
 
     @Test
@@ -104,15 +113,26 @@ class BookRepositoryTest {
         Optional<Book> bookFromDB = bookRepository.findById(bookId);
         assertThat(bookFromDB).isPresent();
 
-        List<Comment> comments = commentRepository.findAllByBookId(bookId);
+        List<Comment> comments = findCommentsByBookId(bookId);
         assertThat(comments.size()).isEqualTo(2);
 
         bookRepository.deleteById(bookId);
-        assertThat(commentRepository.findAllByBookId(bookId)).isEmpty();
+        assertThat(findCommentsByBookId(bookId)).isEmpty();
     }
 
     @Test
     void shouldReturnAllBooksCount() {
         assertThat(bookRepository.count()).isEqualTo(3L);
+    }
+
+    private Book findBookById(String id) {
+        Aggregation aggregation = newAggregation(match(Criteria.where("id").is(id)));
+        List<Book> mappedResults = mongoTemplate.aggregate(aggregation, Book.class, Book.class).getMappedResults();
+        return mappedResults.size() == 1 ? mappedResults.get(0) : null;
+    }
+
+    private List<Comment> findCommentsByBookId(String bookId) {
+        Aggregation aggregation = newAggregation(match(Criteria.where("book_id").is(bookId)));
+        return mongoTemplate.aggregate(aggregation, Comment.class, Comment.class).getMappedResults();
     }
 }

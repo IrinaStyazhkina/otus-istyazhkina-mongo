@@ -13,4 +13,7 @@ public interface BookRepository extends MongoRepository<Book, String> {
 
     List<Book> findAllByGenreId(String genreId);
 
+    boolean existsByAuthorId(String id);
+
+    boolean existsByGenreId(String id);
 }

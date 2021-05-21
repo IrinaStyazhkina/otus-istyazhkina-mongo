@@ -36,7 +36,6 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public Comment addNewComment(String content, String bookId) throws DataOperationException {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new DataOperationException("Can not add new Comment. Book by provided id is not found!"));
-        Comment comment = new Comment(content, book);
         return commentRepository.save(new Comment(content, book));
     }
 
