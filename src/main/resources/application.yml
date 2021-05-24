@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: library
+      authentication-database: none
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.istyazhkina.library.changelogs
