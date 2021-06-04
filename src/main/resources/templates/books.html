@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All books</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <a href="/">
+            <img class="header_logo" src="/img/book_icon.svg" width="60" height="60" alt="book icon">
+        </a>
+        <h1 class="header_title" th:text="#{all.books}">All books</h1>
+        <div class="header_langs">
+            <a class="lang_link" href="?lang=ru_RU">
+                <img src="/img/russian-language.svg" width="30" height="30" alt="russian language icon"/>
+            </a>
+            <a class="lang_link" href="?lang=en">
+                <img src="/img/english-language.svg" width="30" height="30" alt="english language icon"/>
+            </a>
+        </div>
+    </header>
+    <main class="content">
+        <div class="content_column">
+            <a class="create_link" th:href="@{/books/add}" href="book.html" th:text="#{add.new.book}">Add new book</a>
+            <table class="table">
+                <thead class="table_header">
+                <tr class="table_row table_row--header">
+                    <th class="table_cell table_cell--header">ID</th>
+                    <th class="table_cell table_cell--header" th:text="#{title}">Title</th>
+                    <th class="table_cell table_cell--header" th:text="#{author}">Author</th>
+                    <th class="table_cell table_cell--header" th:text="#{genre}">Genre</th>
+                    <th class="table_cell table_cell--header" th:text="#{link}">Link</th>
+                    <th class="table_cell table_cell--header"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="table_row" th:each="book : ${books}">
+                    <td class="table_cell" th:text="${book.id}">1</td>
+                    <td class="table_cell" th:text="${book.title}">War and Peace</td>
+                    <td class="table_cell" th:text="${book.authorDTO.name} + ' ' + ${book.authorDTO.surname}">Lev
+                        Tolstoy
+                    </td>
+                    <td class="table_cell" th:text="${book.genreDTO.name}">novel</td>
+                    <td class="table_cell">
+                        <a class="table_edit-link" th:href="@{/books/__${book.id}__}" href="book.html"
+                           th:text="#{edit}">Edit</a>
+                    </td>
+                    <td class="table_cell">
+                        <form th:action="@{/books/delete/__${book.id}__}" method="post" action="book.html">
+                            <button type="submit" th:text="#{delete}">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="content_column">
+            <img class="content_image" src="/img/library.jpg" width="700" height="700" alt="library">
+        </div>
+    </main>
+    <footer class="footer">
+        <p class="footer_content">&copy; 2021 Library study project</p>
+    </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All authors</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <a href="/">
+            <img class="header_logo" src="/img/book_icon.svg" width="60" height="60">
+        </a>
+        <h1 class="header_title" th:text="#{all.authors}">All authors</h1>
+        <div class="header_langs">
+            <a class="lang_link" href="?lang=ru_RU">
+                <img src="/img/russian-language.svg" width="30" height="30"/>
+            </a>
+            <a class="lang_link" href="?lang=en">
+                <img src="/img/english-language.svg" width="30" height="30"/>
+            </a>
+        </div>
+    </header>
+    <main class="content">
+        <div class="content_column">
+            <a class="create_link" th:href="@{/authors/add}" href="author.html" th:text="#{add.new.author}">Add new
+                author</a>
+            <table class="table">
+                <thead class="table_header">
+                <tr class="table_row table_row--header">
+                    <th class="table_cell table_cell--header">ID</th>
+                    <th class="table_cell table_cell--header" th:text="#{author.name}">Name</th>
+                    <th class="table_cell table_cell--header" th:text="#{author.surname}">Surname</th>
+                    <th class="table_cell table_cell--header" th:text="#{link}">Link</th>
+                    <th class="table_cell table_cell--header"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="table_row" th:each="author : ${authors}">
+                    <td class="table_cell" th:text="${author.id}">1</td>
+                    <td class="table_cell" th:text="${author.name}">Lev</td>
+                    <td class="table_cell" th:text="${author.surname}">Tolstoy</td>
+                    <td class="table_cell">
+                        <a class="table_edit-link" th:href="@{/authors/__${author.id}__}" href="author.html"
+                           th:text="#{edit}">Edit</a>
+                    </td>
+                    <td class="table_cell">
+                        <form th:action="@{/authors/delete/__${author.id}__}" method="post" action="author.html">
+                            <button type="submit" th:text="#{delete}">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="content_column">
+            <img src="/img/library2.jpg" width="800" height="800">
+        </div>
+    </main>
+    <footer class="footer">
+        <p class="footer_content">&copy; 2021 Library study project</p>
+    </footer>
+</div>
+</body>
+</html>

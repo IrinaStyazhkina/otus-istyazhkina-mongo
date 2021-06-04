@@ -3,10 +3,10 @@ package ru.otus.istyazhkina.library.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.istyazhkina.library.domain.Author;
-import ru.otus.istyazhkina.library.exceptions.DataOperationException;
-import ru.otus.istyazhkina.library.exceptions.IllegalDeleteOperationException;
-import ru.otus.istyazhkina.library.exceptions.IllegalSaveOperationException;
+import ru.otus.istyazhkina.library.domain.jpa.Author;
+import ru.otus.istyazhkina.library.exception.DataOperationException;
+import ru.otus.istyazhkina.library.exception.IllegalDeleteOperationException;
+import ru.otus.istyazhkina.library.exception.IllegalSaveOperationException;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
 import ru.otus.istyazhkina.library.service.AuthorService;
 
@@ -38,9 +38,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional(rollbackFor = DataOperationException.class)
-    public Author addNewAuthor(String name, String surname) throws DataOperationException {
+    public Author addNewAuthor(Author author) throws DataOperationException {
         try {
-            Author author = new Author(name, surname);
             return authorRepository.save(author);
         } catch (IllegalSaveOperationException e) {
             throw new DataOperationException("Can not add author because author already exists!");
@@ -49,12 +48,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional(rollbackFor = DataOperationException.class)
-    public Author updateAuthor(String id, String newName, String newSurname) throws DataOperationException {
-        Author author = authorRepository.findById(id).orElseThrow(() -> new DataOperationException("Can not update author. Author by provided ID not found"));
-        author.setName(newName);
-        author.setSurname(newSurname);
+    public Author updateAuthor(String id, Author author) throws DataOperationException {
+        Author authorFromDB = authorRepository.findById(id).orElseThrow(() -> new DataOperationException("Can not update author. Author by provided ID not found"));
+        if (author.getName().equals(authorFromDB.getName()) && author.getSurname().equals(authorFromDB.getSurname())) {
+            return authorFromDB;
+        }
+        authorFromDB.setName(author.getName());
+        authorFromDB.setSurname(author.getSurname());
         try {
-            return authorRepository.save(author);
+            return authorRepository.save(authorFromDB);
         } catch (IllegalSaveOperationException e) {
             throw new DataOperationException("Can not update author because author with same name already exists!");
         }

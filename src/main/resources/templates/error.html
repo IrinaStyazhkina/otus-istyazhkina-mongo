@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error page</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <a href="/">
+            <img class="header_logo" src="/img/book_icon.svg" width="60" height="60" alt="book icon">
+        </a>
+        <h1 class="header_title" th:text="#{title.library}">Library</h1>
+        <div class="header_langs">
+            <a class="lang_link" href="?lang=ru_RU">
+                <img src="/img/russian-language.svg" width="30" height="30" alt="russian language icon"/>
+            </a>
+            <a class="lang_link" href="?lang=en">
+                <img src="/img/english-language.svg" width="30" height="30" alt="english language icon"/>
+            </a>
+        </div>
+    </header>
+    <main class="content">
+        <div class="error_container">
+            <p class="error_message" th:text="#{error.header}">Error occurred!</p>
+            <p class="error_message" th:text="${errorMessage}">Error message</p>
+            <nav class="navigation">
+                <a class="navigation_link" href="books.html" th:href="@{/books}" th:text="#{all.books}">All Books</a>
+                <a class="navigation_link" href="genres.html" th:href="@{/genres}" th:text="#{all.genres}">All
+                    Genres</a>
+                <a class="navigation_link" href="authors.html" th:href="@{/authors}" th:text="#{all.authors}">All
+                    Authors</a>
+            </nav>
+        </div>
+    </main>
+    <footer class="footer">
+        <p class="footer_content">&copy; 2021 Library study project</p>
+    </footer>
+</div>
+</body>
+</html>

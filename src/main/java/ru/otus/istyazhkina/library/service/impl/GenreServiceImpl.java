@@ -3,10 +3,10 @@ package ru.otus.istyazhkina.library.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.istyazhkina.library.domain.Genre;
-import ru.otus.istyazhkina.library.exceptions.DataOperationException;
-import ru.otus.istyazhkina.library.exceptions.IllegalDeleteOperationException;
-import ru.otus.istyazhkina.library.exceptions.IllegalSaveOperationException;
+import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.exception.DataOperationException;
+import ru.otus.istyazhkina.library.exception.IllegalDeleteOperationException;
+import ru.otus.istyazhkina.library.exception.IllegalSaveOperationException;
 import ru.otus.istyazhkina.library.repository.GenreRepository;
 import ru.otus.istyazhkina.library.service.GenreService;
 
@@ -38,9 +38,8 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional(rollbackFor = DataOperationException.class)
-    public Genre addNewGenre(String name) throws DataOperationException {
+    public Genre addNewGenre(Genre genre) throws DataOperationException {
         try {
-            Genre genre = new Genre(name);
             return genreRepository.save(genre);
         } catch (IllegalSaveOperationException e) {
             throw new DataOperationException("Can not add genre because genre already exists!");
@@ -49,11 +48,14 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional(rollbackFor = DataOperationException.class)
-    public Genre updateGenresName(String id, String newName) throws DataOperationException {
-        Genre genre = genreRepository.findById(id).orElseThrow(() -> new DataOperationException("Can not update genre. Genre by provided ID not found"));
-        genre.setName(newName);
+    public Genre updateGenre(String id, Genre genre) throws DataOperationException {
+        Genre genreFromDB = genreRepository.findById(id).orElseThrow(() -> new DataOperationException("Can not update genre. Genre by provided ID not found"));
+        if (genre.getName().equals(genreFromDB.getName())) {
+            return genreFromDB;
+        }
+        genreFromDB.setName(genre.getName());
         try {
-            return genreRepository.save(genre);
+            return genreRepository.save(genreFromDB);
         } catch (IllegalSaveOperationException e) {
             throw new DataOperationException("Can not update genre because genre with same name already exists!");
         }

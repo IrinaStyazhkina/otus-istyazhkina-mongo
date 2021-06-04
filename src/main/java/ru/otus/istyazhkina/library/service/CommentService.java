@@ -1,7 +1,7 @@
 package ru.otus.istyazhkina.library.service;
 
-import ru.otus.istyazhkina.library.domain.Comment;
-import ru.otus.istyazhkina.library.exceptions.DataOperationException;
+import ru.otus.istyazhkina.library.domain.jpa.Comment;
+import ru.otus.istyazhkina.library.exception.DataOperationException;
 
 import java.util.List;
 
