@@ -1,7 +1,7 @@
 package ru.otus.istyazhkina.library.service;
 
-import ru.otus.istyazhkina.library.domain.Author;
-import ru.otus.istyazhkina.library.exceptions.DataOperationException;
+import ru.otus.istyazhkina.library.domain.jpa.Author;
+import ru.otus.istyazhkina.library.exception.DataOperationException;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ public interface AuthorService {
 
     Author getAuthorByName(String name, String surname) throws DataOperationException;
 
-    Author addNewAuthor(String name, String surname) throws DataOperationException;
+    Author addNewAuthor(Author author) throws DataOperationException;
 
-    Author updateAuthor(String id, String newName, String newSurname) throws DataOperationException;
+    Author updateAuthor(String id, Author auhtor) throws DataOperationException;
 
     void deleteAuthor(String id) throws DataOperationException;
 }

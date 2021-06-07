@@ -1,7 +1,7 @@
 package ru.otus.istyazhkina.library.service;
 
-import ru.otus.istyazhkina.library.domain.Genre;
-import ru.otus.istyazhkina.library.exceptions.DataOperationException;
+import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.exception.DataOperationException;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ public interface GenreService {
 
     Genre getGenreByName(String name) throws DataOperationException;
 
-    Genre addNewGenre(String name) throws DataOperationException;
+    Genre addNewGenre(Genre genre) throws DataOperationException;
 
-    Genre updateGenresName(String id, String newName) throws DataOperationException;
+    Genre updateGenre(String id, Genre genre) throws DataOperationException;
 
     void deleteGenre(String id) throws DataOperationException;
 }

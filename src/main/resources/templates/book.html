@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <a href="/">
+            <img class="header_logo" src="/img/book_icon.svg" width="60" height="60" alt="book icon">
+        </a>
+        <h1 class="header_title" th:text="#{book}">Book</h1>
+        <div class="header_langs">
+            <a class="lang_link" href="?lang=ru_RU">
+                <img src="/img/russian-language.svg" width="30" height="30" alt="russian language icon"/>
+            </a>
+            <a class="lang_link" href="?lang=en">
+                <img src="/img/english-language.svg" width="30" height="30" alt="english language icon"/>
+            </a>
+        </div>
+    </header>
+    <main class="content">
+        <div class="content_column">
+            <div th:if="${add}" class="form_wrapper">
+                <form action="book.html" class="item_form" id="add-book"
+                      th:action="@{/books/add}"
+                      th:method="post"
+                      th:object="${book}">
+                    <label class="item_label" for="book_title" th:text="#{title}">Title</label>
+                    <input class="item_input" id="book_title" th:field="*{title}" value="War and Peace" required>
+                    <label class="item_label" for="book_author" th:text="#{author}">Author</label>
+                    <select class="item_select" th:field="*{authorDTO}" id="book_author">
+                        <option th:each="author : ${allAuthors}"
+                                th:value="${author}"
+                                th:text="${author.name} + ' ' + ${author.surname}">
+                            Lev Tolstoy
+                        </option>
+                    </select>
+                    <label class="item_label" for="book_genre" th:text="#{genre}">Genre</label>
+                    <select class="item_select" th:field="*{genreDTO}" id="book_genre">
+                        <option th:each="genre : ${allGenres}"
+                                th:value="${genre}"
+                                th:text="${genre.name}">
+                            novel
+                        </option>
+                    </select>
+                    <button class="item_btn" type="submit" id="save" th:text="#{save}">Save</button>
+                </form>
+            </div>
+            <div th:unless="${add}" class="form_wrapper">
+                <form class="item_form" id="edit-book" th:action="@{/books/__${book.id}__}" th:method="post"
+                      action="book.html" name="book">
+                    <label class="item_label" for="book_id">ID</label>
+                    <input class="item_input book_input--disabled" id="book_id" th:field="${book.id}" value="1"
+                           disabled>
+                    <label class="item_label" for="book_title" th:text="#{title}">Title</label>
+                    <input class="item_input" id="book_title" th:field="${book.title}" value="War and Peace" required>
+                    <label class="item_label" for="book_author" th:text="#{author}">Author</label>
+                    <select class="item_select" th:field="${book.authorDTO}" id="book_author" name="author">
+                        <option th:each="author : ${allAuthors}"
+                                th:value="${author}"
+                                th:text="${author.name} + ' ' + ${author.surname}">
+                        </option>
+                    </select>
+                    <label class="item_label" for="book_genre" th:text="#{genre}">Genre</label>
+                    <select class="item_select" th:field="${book.genreDTO}" id="book_genre" name="genre">
+                        <option th:each="genre : ${allGenres}"
+                                th:value="${genre}"
+                                th:text="${genre.name}">
+                        </option>
+                    </select>
+                    <button class="item_btn" type="submit" th:text="#{save}">Save</button>
+                </form>
+            </div>
+        </div>
+        <div class="content_column">
+            <img class="content_image" src="/img/library.jpg" width="700" height="700" alt="library">
+        </div>
+    </main>
+    <footer class="footer">
+        <p class="footer_content">&copy; 2021 Library study project</p>
+    </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All genres</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <a href="/">
+            <img class="header_logo" src="/img/book_icon.svg" width="60" height="60">
+        </a>
+        <h1 class="header_title" th:text="#{all.genres}">All genres</h1>
+        <div class="header_langs">
+            <a class="lang_link" href="?lang=ru_RU">
+                <img src="/img/russian-language.svg" width="30" height="30"/>
+            </a>
+            <a class="lang_link" href="?lang=en">
+                <img src="/img/english-language.svg" width="30" height="30"/>
+            </a>
+        </div>
+    </header>
+    <main class="content">
+        <div class="content_column">
+            <a class="create_link" th:href="@{/genres/add}" href="genre.html" th:text="#{add.new.genre}">Add new
+                genre</a>
+            <table class="table">
+                <thead class="table_header">
+                <tr class="table_row table_row--header">
+                    <th class="table_cell table_cell--header">ID</th>
+                    <th class="table_cell table_cell--header" th:text="#{genre.name}">Name</th>
+                    <th class="table_cell table_cell--header" th:text="#{link}">Link</th>
+                    <th class="table_cell table_cell--header"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="table_row" th:each="gen : ${genres}">
+                    <td class="table_cell" th:text="${gen.id}">1</td>
+                    <td class="table_cell" th:text="${gen.name}">novel</td>
+                    <td class="table_cell">
+                        <a class="table_edit-link" th:href="@{/genres/__${gen.id}__}" href="genre.html"
+                           th:text="#{edit}">Edit</a>
+                    </td>
+                    <td class="table_cell">
+                        <form th:action="@{/genres/delete/__${gen.id}__}" method="post" action="genres.html">
+                            <button type="submit" th:text="#{delete}">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="content_column">
+            <img src="/img/library3.jpg" width="800" height="800">
+        </div>
+    </main>
+    <footer class="footer">
+        <p class="footer_content">&copy; 2021 Library study project</p>
+    </footer>
+</div>
+</body>
+</html>

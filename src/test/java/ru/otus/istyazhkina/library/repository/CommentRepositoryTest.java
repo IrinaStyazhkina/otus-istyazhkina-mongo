@@ -4,20 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.istyazhkina.library.domain.Author;
-import ru.otus.istyazhkina.library.domain.Book;
-import ru.otus.istyazhkina.library.domain.Comment;
-import ru.otus.istyazhkina.library.domain.Genre;
+import ru.otus.istyazhkina.library.domain.jpa.Author;
+import ru.otus.istyazhkina.library.domain.jpa.Book;
+import ru.otus.istyazhkina.library.domain.jpa.Comment;
+import ru.otus.istyazhkina.library.domain.jpa.Genre;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 
 @DataMongoTest
 class CommentRepositoryTest {
@@ -67,7 +63,7 @@ class CommentRepositoryTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldUpdateExistingComment() {
         String commentId = "9087";
-        Comment commentFromDB = findCommentById(commentId);
+        Comment commentFromDB = mongoTemplate.findById(commentId, Comment.class);
         Comment infoToUpdate = new Comment(commentId, "The best of Russian classics", commentFromDB.getBook());
         Comment result = commentRepository.save(infoToUpdate);
 
@@ -80,15 +76,14 @@ class CommentRepositoryTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     void shouldDeleteExistingComment() {
         String commentId = "9089";
-        Comment commentFromDB = findCommentById(commentId);
+        Comment commentFromDB = mongoTemplate.findById(commentId, Comment.class);
         assertThat(commentFromDB).isNotNull();
         assertThat(commentRepository.count()).isEqualTo(3);
 
         commentRepository.deleteById(commentId);
         assertThat(commentRepository.count()).isEqualTo(2);
-        assertThat(findCommentById(commentId)).isNull();
+        assertThat(mongoTemplate.findById(commentId, Comment.class)).isNull();
     }
-
 
     @Test
     void shouldReturnCommentsByBookId() {
@@ -96,11 +91,5 @@ class CommentRepositoryTest {
         assertThat(commentsByBookId).containsExactlyInAnyOrder(
                 commentRepository.findById("9088").get(),
                 commentRepository.findById("9089").get());
-    }
-
-    private Comment findCommentById(String id) {
-        Aggregation aggregation = newAggregation(match(Criteria.where("id").is(id)));
-        List<Comment> mappedResults = mongoTemplate.aggregate(aggregation, Comment.class, Comment.class).getMappedResults();
-        return mappedResults.size() == 1 ? mappedResults.get(0) : null;
     }
 }

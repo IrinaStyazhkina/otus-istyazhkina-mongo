@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Author</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <a href="/">
+            <img class="header_logo" src="/img/book_icon.svg" width="60" height="60" alt="book icon">
+        </a>
+        <h1 class="header_title" th:text="#{author}">Author</h1>
+        <div class="header_langs">
+            <a class="lang_link" href="?lang=ru_RU">
+                <img src="/img/russian-language.svg" width="30" height="30" alt="russian language icon"/>
+            </a>
+            <a class="lang_link" href="?lang=en">
+                <img src="/img/english-language.svg" width="30" height="30" alt="english language icon"/>
+            </a>
+        </div>
+    </header>
+    <main class="content">
+        <div th:if="${add}" class="form_wrapper">
+            <form action="author.html" class="item_form" id="add-author"
+                  th:action="@{/authors/add}"
+                  th:method="post"
+                  th:object="${author}">
+                <label class="item_label" for="author_name" th:text="#{author.name}">Name</label>
+                <input class="item_input" id="author_name" th:field="*{name}" value="" required>
+                <label class="item_label" for="author_surname" th:text="#{author.surname}">Surname</label>
+                <input class="item_input" id="author_surname" th:field="*{surname}" value="" required>
+                <button class="item_btn" type="submit" id="save" th:text="#{save}">Save</button>
+            </form>
+        </div>
+        <div th:unless="${add}" class="form_wrapper">
+            <form action="author.html" class="item_form" id="edit-author"
+                  th:action="@{/authors/update/__${author.id}__}"
+                  th:method="post"
+                  th:object="${author}">
+                <label class="item_label" for="author_id">ID</label>
+                <input class="item_input" type="text" id="author_id" th:field="*{id}" value="1" disabled>
+                <label class="item_label" for="author_name" th:text="#{author.name}">Name</label>
+                <input class="item_input" id="author_name" th:field="*{name}" value="Lev" required>
+                <label class="item_label" for="author_surname" th:text="#{author.surname}">Surname</label>
+                <input class="item_input" id="author_surname" th:field="*{surname}" value="Tolstoy" required>
+                <button class="item_btn" type="submit" id="save" th:text="#{save}">Save</button>
+            </form>
+        </div>
+        <img src="/img/library2.jpg" width="800" height="800" alt="library">
+    </main>
+    <footer class="footer">
+        <p class="footer_content">&copy; 2021 Library study project</p>
+    </footer>
+</div>
+</body>
+</html>

@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.istyazhkina.library.domain.Book;
+import ru.otus.istyazhkina.library.domain.jpa.Author;
+import ru.otus.istyazhkina.library.domain.jpa.Book;
+import ru.otus.istyazhkina.library.domain.jpa.Genre;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
 import ru.otus.istyazhkina.library.repository.BookRepository;
 import ru.otus.istyazhkina.library.repository.GenreRepository;
@@ -33,7 +35,7 @@ class BookServiceImplIntegrationTest {
         assertThat(genreRepository.findByName("play")).isEmpty();
         assertThat(authorRepository.findByNameAndSurname("Anton", "Chekhov")).isEmpty();
 
-        Book book = bookService.addNewBook("Seagull", "Anton", "Chekhov", "play");
+        Book book = bookService.addNewBook(new Book("Seagull", new Author("Anton", "Chekhov"), new Genre("play")));
         assertThat(genreRepository.findByName("play")).isNotNull();
         assertThat(authorRepository.findByNameAndSurname("Anton", "Chekhov")).isNotNull();
         assertThat(book.getTitle()).isEqualTo("Seagull");

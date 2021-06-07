@@ -1,7 +1,7 @@
 package ru.otus.istyazhkina.library.service;
 
-import ru.otus.istyazhkina.library.domain.Book;
-import ru.otus.istyazhkina.library.exceptions.DataOperationException;
+import ru.otus.istyazhkina.library.domain.jpa.Book;
+import ru.otus.istyazhkina.library.exception.DataOperationException;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public interface BookService {
 
     List<Book> getBooksByTitle(String name);
 
-    Book addNewBook(String bookTitle, String authorName, String authorSurname, String genreName);
+    Book addNewBook(Book book);
 
-    Book updateBookTitle(String id, String newTitle) throws DataOperationException;
+    Book updateBook(String id, Book book) throws DataOperationException;
 
     void deleteBookById(String id) throws DataOperationException;
 }

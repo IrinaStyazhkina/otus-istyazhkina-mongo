@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.istyazhkina.library.domain.Author;
-import ru.otus.istyazhkina.library.domain.Book;
-import ru.otus.istyazhkina.library.domain.Genre;
-import ru.otus.istyazhkina.library.exceptions.DataOperationException;
+import ru.otus.istyazhkina.library.domain.jpa.Book;
+import ru.otus.istyazhkina.library.exception.DataOperationException;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
 import ru.otus.istyazhkina.library.repository.BookRepository;
 import ru.otus.istyazhkina.library.repository.GenreRepository;
@@ -49,25 +47,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book addNewBook(String bookTitle, String authorName, String authorSurname, String genreName) {
-        Author author = authorRepository
-                .findByNameAndSurname(authorName, authorSurname)
-                .orElseGet(() -> authorRepository.save(new Author(authorName, authorSurname)));
-
-        Genre genre = genreRepository.findByName(genreName)
-                .orElseGet(() -> genreRepository.save(new Genre(genreName)));
-
-        Book book = new Book(bookTitle, author, genre);
+    public Book addNewBook(Book book) {
         bookRepository.save(book);
         return book;
     }
 
     @Override
     @Transactional
-    public Book updateBookTitle(String id, String newTitle) throws DataOperationException {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new DataOperationException("Book by provided ID not found"));
-        book.setTitle(newTitle);
-        bookRepository.save(book);
+    public Book updateBook(String id, Book book) throws DataOperationException {
+        Book bookFromDB = bookRepository.findById(id).orElseThrow(() -> new DataOperationException("Book by provided ID not found"));
+        bookFromDB.setTitle(book.getTitle());
+        bookFromDB.setGenre(book.getGenre());
+        bookFromDB.setAuthor(book.getAuthor());
+        bookRepository.save(bookFromDB);
         return book;
     }
 

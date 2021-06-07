@@ -3,10 +3,10 @@ package ru.otus.istyazhkina.library.changelogs;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
-import ru.otus.istyazhkina.library.domain.Author;
-import ru.otus.istyazhkina.library.domain.Book;
-import ru.otus.istyazhkina.library.domain.Comment;
-import ru.otus.istyazhkina.library.domain.Genre;
+import ru.otus.istyazhkina.library.domain.jpa.Author;
+import ru.otus.istyazhkina.library.domain.jpa.Book;
+import ru.otus.istyazhkina.library.domain.jpa.Comment;
+import ru.otus.istyazhkina.library.domain.jpa.Genre;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
 import ru.otus.istyazhkina.library.repository.BookRepository;
 import ru.otus.istyazhkina.library.repository.CommentRepository;
@@ -40,7 +40,8 @@ public class InitMongoDBDataChangeLog {
         Genre novel = genreRepository.save(new Genre("novel"));
         Genre poetry = genreRepository.save(new Genre("poetry"));
         Genre fantasy = genreRepository.save(new Genre("fantasy"));
-        genres.addAll(List.of(novel, poetry, fantasy));
+        Genre fiction = genreRepository.save(new Genre("fiction"));
+        genres.addAll(List.of(novel, poetry, fantasy, fiction));
     }
 
     @ChangeSet(order = "003", id = "initBooks", author = "irinastyazhkina", runAlways = true)
