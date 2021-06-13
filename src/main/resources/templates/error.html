@@ -23,8 +23,7 @@
     </header>
     <main class="content">
         <div class="error_container">
-            <p class="error_message" th:text="#{error.header}">Error occurred!</p>
-            <p class="error_message" th:text="${errorMessage}">Error message</p>
+            <p class="error_message" th:text="#{error.header}">Unexpected error occurred!</p>
             <nav class="navigation">
                 <a class="navigation_link" href="books.html" th:href="@{/books}" th:text="#{all.books}">All Books</a>
                 <a class="navigation_link" href="genres.html" th:href="@{/genres}" th:text="#{all.genres}">All

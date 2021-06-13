@@ -2,91 +2,101 @@ package ru.otus.istyazhkina.library.rest.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.istyazhkina.library.domain.jpa.Author;
-import ru.otus.istyazhkina.library.domain.rest.AuthorDTO;
+import ru.otus.istyazhkina.library.exception.DataOperationException;
+import ru.otus.istyazhkina.library.rest.AppExceptionHandler;
 import ru.otus.istyazhkina.library.service.AuthorService;
 
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(AuthorController.class)
-@AutoConfigureDataMongo
+@Import({AuthorController.class, AppExceptionHandler.class})
 class AuthorControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private AuthorService authorService;
 
-    private AuthorDTO authorDTO = new AuthorDTO("1", "Lev", "Tolstoy");
-    private Author author = AuthorDTO.toAuthor(authorDTO);
-
+    private Author author = new Author("1", "Lev", "Tolstoy");
+    private String arrayJsonContent = "[{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}]";
+    private String authorJson = "{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}";
 
     @Test
     void shouldReturnAuthorsList() throws Exception {
         when(authorService.getAllAuthors()).thenReturn(List.of(author));
-        mockMvc.perform(get("/authors"))
+        mockMvc.perform(get("/api/authors"))
                 .andExpect(status().is(200))
-                .andExpect(view().name("authors"))
-                .andExpect(model().attribute("authors", List.of(authorDTO)));
+                .andExpect(content().json(arrayJsonContent));
     }
 
     @Test
     void shouldReturnAuthorById() throws Exception {
         when(authorService.getAuthorById("1")).thenReturn(author);
-        mockMvc.perform(get("/authors/1"))
+        mockMvc.perform(get("/api/authors/1"))
                 .andExpect(status().is(200))
-                .andExpect(view().name("author"))
-                .andExpect(model().attribute("author", authorDTO))
-                .andExpect(model().attribute("add", false));
+                .andExpect(content().json(authorJson));
     }
 
     @Test
-    void shouldReturnAddAuthorPage() throws Exception {
-        mockMvc.perform(get("/authors/add"))
-                .andExpect(status().is(200))
-                .andExpect(view().name("author"))
-                .andExpect(model().attribute("author", new AuthorDTO()))
-                .andExpect(model().attribute("add", true));
-    }
-
-    @Test
-    void shouldRedirectAfterAddAuthorToAllAuthors() throws Exception {
-        when(authorService.addNewAuthor(author)).thenReturn(author);
+    void shouldCreateNewAuthor() throws Exception {
+        Author newAuthor = new Author("4", "Ivan", "Turgenev");
+        String newAuthorJson = "{\"id\":\"4\",\"name\":\"Ivan\", \"surname\":\"Turgenev\"}";
+        when(authorService.addNewAuthor(new Author("Ivan", "Turgenev"))).thenReturn(newAuthor);
         mockMvc.perform(post("/authors/add")
-                .contentType("application/x-www-form-urlencoded")
-                .content("name=Lev&surname=Tolstoy"))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/authors"));
+                .contentType("application/json;charset=utf-8")
+                .content("{\"name\":\"Ivan\", \"surname\":\"Turgenev\"}"))
+                .andExpect(status().is(201))
+                .andExpect(content().json(newAuthorJson));
     }
 
     @Test
-    void shouldRedirectAfterUpdateAuthorToAllAuthors() throws Exception {
+    void shouldUpdateAuthor() throws Exception {
         when(authorService.updateAuthor("1", author)).thenReturn(author);
-        mockMvc.perform(post("/authors/update/1")
-                .contentType("application/x-www-form-urlencoded")
-                .content("name=Lev&surname=Tolstoy"))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/authors"));
+        mockMvc.perform(put("/authors/1")
+                .contentType("application/json;charset=utf-8")
+                .content(authorJson))
+                .andExpect(status().is(200))
+                .andExpect(content().json(authorJson));
     }
 
     @Test
-    void redirectToAllAuthorsAfterDeleteAuthor() throws Exception {
-        mockMvc.perform(post("/authors/delete/1"))
-                .andExpect(status().is(302))
-                .andExpect(view().name("redirect:/authors"));
-
+    void shouldDeleteAuthor() throws Exception {
+        mockMvc.perform(delete("/authors/3"))
+                .andExpect(status().is(200));
     }
 
+    @Test
+    void shouldReturnExceptionWhileAddExistingAuthor() throws Exception {
+        when(authorService.addNewAuthor(author))
+                .thenThrow(DataOperationException.class);
+
+        mockMvc.perform(post("/authors/add")
+                .contentType("application/json;charset=utf-8")
+                .content(authorJson))
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    void shouldReturnExceptionWhileUpdate() throws Exception {
+        when(authorService.updateAuthor("2", author))
+                .thenThrow(DataOperationException.class);
+
+        mockMvc.perform(put("/authors/2")
+                .contentType("application/json;charset=utf-8")
+                .content(authorJson))
+                .andExpect(status().is(400));
+    }
 }

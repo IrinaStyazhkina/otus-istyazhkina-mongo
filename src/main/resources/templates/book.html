@@ -4,6 +4,7 @@
     <title>Book</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/style/style.css">
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="page">
@@ -23,56 +24,7 @@
     </header>
     <main class="content">
         <div class="content_column">
-            <div th:if="${add}" class="form_wrapper">
-                <form action="book.html" class="item_form" id="add-book"
-                      th:action="@{/books/add}"
-                      th:method="post"
-                      th:object="${book}">
-                    <label class="item_label" for="book_title" th:text="#{title}">Title</label>
-                    <input class="item_input" id="book_title" th:field="*{title}" value="War and Peace" required>
-                    <label class="item_label" for="book_author" th:text="#{author}">Author</label>
-                    <select class="item_select" th:field="*{authorDTO}" id="book_author">
-                        <option th:each="author : ${allAuthors}"
-                                th:value="${author}"
-                                th:text="${author.name} + ' ' + ${author.surname}">
-                            Lev Tolstoy
-                        </option>
-                    </select>
-                    <label class="item_label" for="book_genre" th:text="#{genre}">Genre</label>
-                    <select class="item_select" th:field="*{genreDTO}" id="book_genre">
-                        <option th:each="genre : ${allGenres}"
-                                th:value="${genre}"
-                                th:text="${genre.name}">
-                            novel
-                        </option>
-                    </select>
-                    <button class="item_btn" type="submit" id="save" th:text="#{save}">Save</button>
-                </form>
-            </div>
-            <div th:unless="${add}" class="form_wrapper">
-                <form class="item_form" id="edit-book" th:action="@{/books/__${book.id}__}" th:method="post"
-                      action="book.html" name="book">
-                    <label class="item_label" for="book_id">ID</label>
-                    <input class="item_input book_input--disabled" id="book_id" th:field="${book.id}" value="1"
-                           disabled>
-                    <label class="item_label" for="book_title" th:text="#{title}">Title</label>
-                    <input class="item_input" id="book_title" th:field="${book.title}" value="War and Peace" required>
-                    <label class="item_label" for="book_author" th:text="#{author}">Author</label>
-                    <select class="item_select" th:field="${book.authorDTO}" id="book_author" name="author">
-                        <option th:each="author : ${allAuthors}"
-                                th:value="${author}"
-                                th:text="${author.name} + ' ' + ${author.surname}">
-                        </option>
-                    </select>
-                    <label class="item_label" for="book_genre" th:text="#{genre}">Genre</label>
-                    <select class="item_select" th:field="${book.genreDTO}" id="book_genre" name="genre">
-                        <option th:each="genre : ${allGenres}"
-                                th:value="${genre}"
-                                th:text="${genre.name}">
-                        </option>
-                    </select>
-                    <button class="item_btn" type="submit" th:text="#{save}">Save</button>
-                </form>
+            <div class="form_wrapper">
             </div>
         </div>
         <div class="content_column">
@@ -83,5 +35,11 @@
         <p class="footer_content">&copy; 2021 Library study project</p>
     </footer>
 </div>
+<script src="/js/book.js"></script>
+<script>
+    $(function () {
+        loadBookData();
+    });
+</script>
 </body>
 </html>

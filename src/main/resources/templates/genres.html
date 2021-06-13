@@ -4,20 +4,21 @@
     <title>All genres</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/style/style.css">
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="page">
     <header class="header">
         <a href="/">
-            <img class="header_logo" src="/img/book_icon.svg" width="60" height="60">
+            <img class="header_logo" src="/img/book_icon.svg" width="60" height="60" alt="book icon">
         </a>
         <h1 class="header_title" th:text="#{all.genres}">All genres</h1>
         <div class="header_langs">
             <a class="lang_link" href="?lang=ru_RU">
-                <img src="/img/russian-language.svg" width="30" height="30"/>
+                <img src="/img/russian-language.svg" width="30" height="30" alt="russian language icon"/>
             </a>
             <a class="lang_link" href="?lang=en">
-                <img src="/img/english-language.svg" width="30" height="30"/>
+                <img src="/img/english-language.svg" width="30" height="30" alt="english language icon"/>
             </a>
         </div>
     </header>
@@ -35,29 +36,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="table_row" th:each="gen : ${genres}">
-                    <td class="table_cell" th:text="${gen.id}">1</td>
-                    <td class="table_cell" th:text="${gen.name}">novel</td>
-                    <td class="table_cell">
-                        <a class="table_edit-link" th:href="@{/genres/__${gen.id}__}" href="genre.html"
-                           th:text="#{edit}">Edit</a>
-                    </td>
-                    <td class="table_cell">
-                        <form th:action="@{/genres/delete/__${gen.id}__}" method="post" action="genres.html">
-                            <button type="submit" th:text="#{delete}">Delete</button>
-                        </form>
-                    </td>
-                </tr>
                 </tbody>
             </table>
         </div>
         <div class="content_column">
-            <img src="/img/library3.jpg" width="800" height="800">
+            <img src="/img/library3.jpg" width="800" height="800" alt="library">
         </div>
     </main>
     <footer class="footer">
         <p class="footer_content">&copy; 2021 Library study project</p>
     </footer>
 </div>
+<script src="/js/genre.js"></script>
+<script>
+    $(function () {
+        loadAllGenresData();
+    });
+</script>
 </body>
 </html>
