@@ -51,10 +51,16 @@ body {
     background-color: darkslategrey;
     color: antiquewhite;
     padding: 10px 15px;
+    text-overflow: ellipsis;
+    white-space: pre-line;
+    overflow: hidden;
+    font-size: 14px;
+    max-width: 200px;
 }
 
 .table_edit-link {
     color: antiquewhite;
+    display: block;
 }
 
 .form_wrapper {
@@ -97,6 +103,10 @@ body {
     padding: 10px;
     color: darkslategrey;
     text-underline: none;
+}
+
+.delete_button {
+    display: block;
 }
 
 .navigation {

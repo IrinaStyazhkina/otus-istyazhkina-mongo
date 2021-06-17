@@ -4,6 +4,7 @@
     <title>All authors</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/style/style.css">
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="page">
@@ -36,20 +37,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="table_row" th:each="author : ${authors}">
-                    <td class="table_cell" th:text="${author.id}">1</td>
-                    <td class="table_cell" th:text="${author.name}">Lev</td>
-                    <td class="table_cell" th:text="${author.surname}">Tolstoy</td>
-                    <td class="table_cell">
-                        <a class="table_edit-link" th:href="@{/authors/__${author.id}__}" href="author.html"
-                           th:text="#{edit}">Edit</a>
-                    </td>
-                    <td class="table_cell">
-                        <form th:action="@{/authors/delete/__${author.id}__}" method="post" action="author.html">
-                            <button type="submit" th:text="#{delete}">Delete</button>
-                        </form>
-                    </td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -61,5 +48,11 @@
         <p class="footer_content">&copy; 2021 Library study project</p>
     </footer>
 </div>
+<script src="/js/author.js"></script>
+<script>
+    $(function () {
+        loadAllAuthorsData();
+    });
+</script>
 </body>
 </html>

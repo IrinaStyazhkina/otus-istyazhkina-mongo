@@ -1,75 +1,61 @@
 package ru.otus.istyazhkina.library.rest.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import ru.otus.istyazhkina.library.domain.jpa.Genre;
 import ru.otus.istyazhkina.library.domain.rest.GenreDTO;
 import ru.otus.istyazhkina.library.exception.DataOperationException;
 import ru.otus.istyazhkina.library.service.GenreService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class GenreController {
 
     private final GenreService genreService;
 
-    @GetMapping("/genres")
-    public String getAllGenres(Model model) {
-        List<GenreDTO> genres = genreService.getAllGenres()
-                .stream()
-                .map(GenreDTO::toDto)
+    @GetMapping("/api/genres")
+    @ResponseStatus(HttpStatus.OK)
+    public List<GenreDTO> getAllGenres() {
+        return genreService.getAllGenres().stream().map(GenreDTO::toDto)
                 .collect(Collectors.toList());
-        model.addAttribute("genres", genres);
-        return "genres";
     }
 
-    @GetMapping("/genres/{genreId}")
-    public String getGenreById(@PathVariable("genreId") String genreId, Model model) throws DataOperationException {
-        Genre genre = genreService.getGenreById(genreId);
-        model.addAttribute("genre", GenreDTO.toDto(genre));
-        model.addAttribute("add", false);
-        return "genre";
+    @GetMapping("/api/genres/{genreId}")
+    @ResponseStatus(HttpStatus.OK)
+    public GenreDTO getGenre(@PathVariable("genreId") String genreId) throws DataOperationException {
+        return GenreDTO.toDto(genreService.getGenreById(genreId));
     }
 
-    @GetMapping("genres/add")
-    public String getAddGenrePage(Model model) {
-        GenreDTO genre = new GenreDTO();
-        model.addAttribute("genre", genre);
-        model.addAttribute("add", true);
-        return "genre";
-    }
 
-    @PostMapping("genres/update/{genreId}")
-    public String updateGenre(@PathVariable("genreId") String genreId, GenreDTO genreDTO) throws DataOperationException {
+    @PutMapping("/genres/{genreId}")
+    @ResponseStatus(HttpStatus.OK)
+    public GenreDTO updateGenre(@PathVariable("genreId") String genreId, @RequestBody GenreDTO genreDTO) throws DataOperationException {
         Genre genre = GenreDTO.toGenre(genreDTO);
-        genreService.updateGenre(genreId, genre);
-        return "redirect:/genres";
+        return GenreDTO.toDto(genreService.updateGenre(genreId, genre));
     }
 
-    @PostMapping("genres/add")
-    public String addGenre(GenreDTO genreDTO, BindingResult bindingResult, ModelMap model) throws DataOperationException {
-        if (bindingResult.hasErrors()) {
-            return "redirect:/genres";
-        }
+    @PostMapping("/genres/add")
+    @ResponseStatus(HttpStatus.CREATED)
+    public GenreDTO addGenre(@Valid @RequestBody GenreDTO genreDTO) throws DataOperationException {
         Genre genre = GenreDTO.toGenre(genreDTO);
-        genreService.addNewGenre(genre);
-        model.clear();
-        return "redirect:/genres";
+        return GenreDTO.toDto(genreService.addNewGenre(genre));
     }
 
-    @PostMapping("genres/delete/{genreId}")
-    public String deleteGenre(@PathVariable("genreId") String genreId) throws DataOperationException {
+    @DeleteMapping("/genres/{genreId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteGenre(@PathVariable("genreId") String genreId) throws DataOperationException {
         genreService.deleteGenre(genreId);
-        return "redirect:/genres";
     }
-
 }

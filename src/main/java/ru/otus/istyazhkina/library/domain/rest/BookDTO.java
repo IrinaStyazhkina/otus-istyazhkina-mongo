@@ -20,7 +20,7 @@ public class BookDTO {
     GenreDTO genreDTO;
 
     public static Book toBook(BookDTO dto) {
-        return new Book(dto.getId(), dto.getTitle(), AuthorDTO.toAuthor(dto.getAuthorDTO()), GenreDTO.toGenre(dto.getGenreDTO()));
+        return Book.builder().title(dto.getTitle()).build();
     }
 
     public static BookDTO toDto(Book book) {

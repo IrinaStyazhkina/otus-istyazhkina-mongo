@@ -4,6 +4,7 @@
     <title>Genre</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/style/style.css">
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="page">
@@ -17,32 +18,12 @@
                 <img src="/img/russian-language.svg" width="30" height="30" alt="russian language icon"/>
             </a>
             <a class="lang_link" href="?lang=en">
-                <img src="/img/english-language.svg" width="30" height="30" allt="english language icon"/>
+                <img src="/img/english-language.svg" width="30" height="30" alt="english language icon"/>
             </a>
         </div>
     </header>
     <main class="content">
-        <div th:if="${add}" class="form_wrapper">
-            <form action="genre.html" class="item_form" id="add-genre"
-                  th:action="@{/genres/add}"
-                  th:method="post"
-                  th:object="${genre}">
-                <label class="item_label" for="genre_name" th:text="#{genre.name}">Name</label>
-                <input class="item_input" id="genre_name" th:field="*{name}" value="" required>
-                <button class="item_btn" type="submit" id="save" th:text="#{save}">Save</button>
-            </form>
-        </div>
-        <div th:unless="${add}" class="form_wrapper">
-            <form action="genre.html" class="item_form" id="edit-genre"
-                  th:action="@{/genres/update/__${genre.id}__}"
-                  th:method="post"
-                  th:object="${genre}">
-                <label class="item_label" for="genre_id">ID</label>
-                <input class="item_input" type="text" id="genre_id" th:field="*{id}" value="1" disabled>
-                <label class="item_label" for="genre_name" th:text="#{genre.name}">Name</label>
-                <input class="item_input" id="genre_name" th:field="*{name}" value="novel" required>
-                <button class="item_btn" type="submit" id="save" th:text="#{save}">Save</button>
-            </form>
+        <div class="form_wrapper">
         </div>
         <img src="/img/library3.jpg" width="800" height="800" alt="library">
     </main>
@@ -50,5 +31,11 @@
         <p class="footer_content">&copy; 2021 Library study project</p>
     </footer>
 </div>
+<script src="/js/genre.js"></script>
+<script>
+    $(function () {
+        loadGenreData();
+    });
+</script>
 </body>
 </html>

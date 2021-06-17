@@ -4,6 +4,7 @@
     <title>All books</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/style/style.css">
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="page">
@@ -36,23 +37,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="table_row" th:each="book : ${books}">
-                    <td class="table_cell" th:text="${book.id}">1</td>
-                    <td class="table_cell" th:text="${book.title}">War and Peace</td>
-                    <td class="table_cell" th:text="${book.authorDTO.name} + ' ' + ${book.authorDTO.surname}">Lev
-                        Tolstoy
-                    </td>
-                    <td class="table_cell" th:text="${book.genreDTO.name}">novel</td>
-                    <td class="table_cell">
-                        <a class="table_edit-link" th:href="@{/books/__${book.id}__}" href="book.html"
-                           th:text="#{edit}">Edit</a>
-                    </td>
-                    <td class="table_cell">
-                        <form th:action="@{/books/delete/__${book.id}__}" method="post" action="book.html">
-                            <button type="submit" th:text="#{delete}">Delete</button>
-                        </form>
-                    </td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -64,5 +48,11 @@
         <p class="footer_content">&copy; 2021 Library study project</p>
     </footer>
 </div>
+<script src="/js/book.js"></script>
+<script>
+    $(function () {
+        loadAllBooksData();
+    });
+</script>
 </body>
 </html>

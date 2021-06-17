@@ -1,18 +1,22 @@
 package ru.otus.istyazhkina.library.rest;
 
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.otus.istyazhkina.library.exception.DataOperationException;
 
 @ControllerAdvice
 public class AppExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public String exception(final DataOperationException ex, final Model model) {
+    @ExceptionHandler(DataOperationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<String> exception(DataOperationException ex) {
         String errorMessage = (ex != null ? ex.getMessage() : "Unknown error");
-        model.addAttribute("errorMessage", errorMessage);
-        return "error";
+        return ResponseEntity.badRequest().body(errorMessage);
     }
 }
 

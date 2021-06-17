@@ -1,6 +1,7 @@
 package ru.otus.istyazhkina.library.domain.jpa;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Document(collection = "book")
 public class Book {
 
@@ -25,6 +27,7 @@ public class Book {
 
     private Author author;
     private Genre genre;
+
 
     public Book(String title, Author author, Genre genre) {
         this.title = title;

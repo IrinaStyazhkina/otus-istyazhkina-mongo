@@ -3,6 +3,7 @@ package ru.otus.istyazhkina.library.service.impl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.istyazhkina.library.domain.jpa.Author;
 import ru.otus.istyazhkina.library.domain.jpa.Book;
@@ -10,15 +11,12 @@ import ru.otus.istyazhkina.library.domain.jpa.Genre;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
 import ru.otus.istyazhkina.library.repository.BookRepository;
 import ru.otus.istyazhkina.library.repository.GenreRepository;
-import ru.otus.istyazhkina.library.service.BookService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Import(BookServiceImpl.class)
 class BookServiceImplIntegrationTest {
-
-    @Autowired
-    private BookService bookService;
 
     @Autowired
     private BookRepository bookRepository;
@@ -28,6 +26,9 @@ class BookServiceImplIntegrationTest {
 
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private BookServiceImpl bookService;
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)

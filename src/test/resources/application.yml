@@ -5,10 +5,9 @@ spring:
       authentication-database: none
       port: 0
       host: localhost
-
-  shell:
-    interactive:
-      enabled: false
+  messages:
+    encoding: UTF-8
+    fallback-to-system-locale: false
 
 mongock:
   runner-type: "InitializingBean"
