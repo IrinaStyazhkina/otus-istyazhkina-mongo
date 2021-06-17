@@ -30,9 +30,9 @@ class GenreControllerTest {
     @Autowired
     private GenreService genreService;
 
-    private Genre genre = new Genre("1", "novel");
-    private String arrayJsonContent = "[{\"id\":\"1\",\"name\":\"novel\"}]";
-    private String genreJson = "{\"id\":\"1\",\"name\":\"novel\"}";
+    private final Genre genre = new Genre("1", "novel");
+    private final String arrayJsonContent = "[{\"id\":\"1\",\"name\":\"novel\"}]";
+    private final String genreJson = "{\"id\":\"1\",\"name\":\"novel\"}";
 
     @Test
     void shouldReturnGenresList() throws Exception {

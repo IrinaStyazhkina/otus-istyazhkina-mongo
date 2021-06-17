@@ -30,9 +30,9 @@ class AuthorControllerTest {
     @Autowired
     private AuthorService authorService;
 
-    private Author author = new Author("1", "Lev", "Tolstoy");
-    private String arrayJsonContent = "[{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}]";
-    private String authorJson = "{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}";
+    private final Author author = new Author("1", "Lev", "Tolstoy");
+    private final String arrayJsonContent = "[{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}]";
+    private final String authorJson = "{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}";
 
     @Test
     void shouldReturnAuthorsList() throws Exception {

@@ -39,11 +39,9 @@ class BookControllerTest {
     @Autowired
     private GenreService genreService;
 
-    private Book book = new Book("1", "Anna Karenina", new Author("1", "Lev", "Tolstoy"), new Genre("1", "novel"));
-
-
-    private String arrayJsonContent = "[{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}]";
-    private String bookJson = "{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}";
+    private final Book book = new Book("1", "Anna Karenina", new Author("1", "Lev", "Tolstoy"), new Genre("1", "novel"));
+    private final String arrayJsonContent = "[{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}]";
+    private final String bookJson = "{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}";
 
     @Test
     void shouldReturnBooksList() throws Exception {
