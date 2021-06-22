@@ -33,12 +33,12 @@ public class ControllerTestConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
+        UserDetails userDetails = User.builder()
                 .username("admin")
                 .password("admin")
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user);
+        return new InMemoryUserDetailsManager(userDetails);
     }
 }
