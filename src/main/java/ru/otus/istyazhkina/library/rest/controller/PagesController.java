@@ -51,4 +51,6 @@ public class PagesController {
     public String getNewBookPage() {
         return "book";
     }
+
+
 }

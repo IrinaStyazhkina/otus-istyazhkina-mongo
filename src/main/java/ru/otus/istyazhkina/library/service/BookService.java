@@ -1,6 +1,6 @@
 package ru.otus.istyazhkina.library.service;
 
-import ru.otus.istyazhkina.library.domain.jpa.Book;
+import ru.otus.istyazhkina.library.domain.entity.Book;
 import ru.otus.istyazhkina.library.exception.DataOperationException;
 
 import java.util.List;

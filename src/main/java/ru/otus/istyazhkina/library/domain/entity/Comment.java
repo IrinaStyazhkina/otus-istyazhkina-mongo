@@ -1,4 +1,4 @@
-package ru.otus.istyazhkina.library.domain.jpa;
+package ru.otus.istyazhkina.library.domain.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

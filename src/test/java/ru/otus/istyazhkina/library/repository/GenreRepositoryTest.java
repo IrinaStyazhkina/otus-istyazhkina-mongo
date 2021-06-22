@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.domain.entity.Genre;
 import ru.otus.istyazhkina.library.exception.IllegalDeleteOperationException;
 import ru.otus.istyazhkina.library.exception.IllegalSaveOperationException;
 import ru.otus.istyazhkina.library.listener.MongoGenreOperationsEventListener;

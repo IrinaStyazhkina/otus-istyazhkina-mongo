@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.domain.entity.Genre;
 
 @AllArgsConstructor
 @NoArgsConstructor

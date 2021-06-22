@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventLis
 import org.springframework.data.mongodb.core.mapping.event.BeforeDeleteEvent;
 import org.springframework.data.mongodb.core.mapping.event.BeforeSaveEvent;
 import org.springframework.stereotype.Component;
-import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.domain.entity.Genre;
 import ru.otus.istyazhkina.library.exception.IllegalDeleteOperationException;
 import ru.otus.istyazhkina.library.exception.IllegalSaveOperationException;
 import ru.otus.istyazhkina.library.repository.BookRepository;

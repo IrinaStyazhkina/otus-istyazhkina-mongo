@@ -2,6 +2,10 @@ package ru.otus.istyazhkina.library.rest.controller;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import ru.otus.istyazhkina.library.service.AuthorService;
 import ru.otus.istyazhkina.library.service.BookService;
 import ru.otus.istyazhkina.library.service.GenreService;
@@ -27,4 +31,14 @@ public class ControllerTestConfiguration {
         return mock(BookService.class);
     }
 
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.builder()
+                .username("admin")
+                .password("admin")
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user);
+    }
 }

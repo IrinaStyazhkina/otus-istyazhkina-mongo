@@ -1,7 +1,7 @@
 package ru.otus.istyazhkina.library.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import ru.otus.istyazhkina.library.domain.jpa.Book;
+import ru.otus.istyazhkina.library.domain.entity.Book;
 
 import java.util.List;
 

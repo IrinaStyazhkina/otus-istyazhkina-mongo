@@ -4,11 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.istyazhkina.library.domain.jpa.Author;
-import ru.otus.istyazhkina.library.domain.jpa.Book;
-import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.domain.entity.Author;
+import ru.otus.istyazhkina.library.domain.entity.Book;
+import ru.otus.istyazhkina.library.domain.entity.Genre;
 import ru.otus.istyazhkina.library.rest.AppExceptionHandler;
+import ru.otus.istyazhkina.library.security.SecurityConfiguration;
 import ru.otus.istyazhkina.library.service.AuthorService;
 import ru.otus.istyazhkina.library.service.BookService;
 import ru.otus.istyazhkina.library.service.GenreService;
@@ -23,8 +26,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BookController.class)
+@WebMvcTest(controllers = BookController.class)
 @Import({BookController.class, AppExceptionHandler.class})
+@ContextConfiguration(classes = {SecurityConfiguration.class, ControllerTestConfiguration.class})
+@WithMockUser
 class BookControllerTest {
 
     @Autowired
@@ -39,9 +44,9 @@ class BookControllerTest {
     @Autowired
     private GenreService genreService;
 
-    private final Book book = new Book("1", "Anna Karenina", new Author("1", "Lev", "Tolstoy"), new Genre("1", "novel"));
-    private final String arrayJsonContent = "[{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}]";
-    private final String bookJson = "{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}";
+    private static final Book book = new Book("1", "Anna Karenina", new Author("1", "Lev", "Tolstoy"), new Genre("1", "novel"));
+    private static final String arrayJsonContent = "[{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}]";
+    private static final String bookJson = "{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}";
 
     @Test
     void shouldReturnBooksList() throws Exception {

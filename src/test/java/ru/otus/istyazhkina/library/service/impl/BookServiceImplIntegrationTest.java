@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.istyazhkina.library.domain.jpa.Author;
-import ru.otus.istyazhkina.library.domain.jpa.Book;
-import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.domain.entity.Author;
+import ru.otus.istyazhkina.library.domain.entity.Book;
+import ru.otus.istyazhkina.library.domain.entity.Genre;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
-import ru.otus.istyazhkina.library.repository.BookRepository;
 import ru.otus.istyazhkina.library.repository.GenreRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,9 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Import(BookServiceImpl.class)
 class BookServiceImplIntegrationTest {
-
-    @Autowired
-    private BookRepository bookRepository;
 
     @Autowired
     private GenreRepository genreRepository;

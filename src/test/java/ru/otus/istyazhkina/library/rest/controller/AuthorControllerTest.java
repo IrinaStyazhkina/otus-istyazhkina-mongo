@@ -4,10 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.istyazhkina.library.domain.jpa.Author;
+import ru.otus.istyazhkina.library.domain.entity.Author;
 import ru.otus.istyazhkina.library.exception.DataOperationException;
 import ru.otus.istyazhkina.library.rest.AppExceptionHandler;
+import ru.otus.istyazhkina.library.security.SecurityConfiguration;
 import ru.otus.istyazhkina.library.service.AuthorService;
 
 import java.util.List;
@@ -20,8 +23,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AuthorController.class)
+@WebMvcTest(controllers = AuthorController.class)
 @Import({AuthorController.class, AppExceptionHandler.class})
+@ContextConfiguration(classes = {SecurityConfiguration.class, ControllerTestConfiguration.class})
+@WithMockUser
 class AuthorControllerTest {
 
     @Autowired
@@ -30,9 +35,9 @@ class AuthorControllerTest {
     @Autowired
     private AuthorService authorService;
 
-    private final Author author = new Author("1", "Lev", "Tolstoy");
-    private final String arrayJsonContent = "[{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}]";
-    private final String authorJson = "{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}";
+    private static final Author author = new Author("1", "Lev", "Tolstoy");
+    private static final String arrayJsonContent = "[{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}]";
+    private static final String authorJson = "{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}";
 
     @Test
     void shouldReturnAuthorsList() throws Exception {
