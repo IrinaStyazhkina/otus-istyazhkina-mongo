@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.istyazhkina.library.domain.jpa.Author;
-import ru.otus.istyazhkina.library.domain.jpa.Book;
-import ru.otus.istyazhkina.library.domain.jpa.Comment;
-import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.domain.entity.Author;
+import ru.otus.istyazhkina.library.domain.entity.Book;
+import ru.otus.istyazhkina.library.domain.entity.Comment;
+import ru.otus.istyazhkina.library.domain.entity.Genre;
 
 import java.util.List;
 import java.util.Optional;

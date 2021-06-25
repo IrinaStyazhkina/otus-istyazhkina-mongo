@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.istyazhkina.library.domain.jpa.Book;
+import ru.otus.istyazhkina.library.domain.entity.Book;
 import ru.otus.istyazhkina.library.exception.DataOperationException;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
 import ru.otus.istyazhkina.library.repository.BookRepository;

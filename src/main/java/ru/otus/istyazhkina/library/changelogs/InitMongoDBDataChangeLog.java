@@ -3,20 +3,27 @@ package ru.otus.istyazhkina.library.changelogs;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
-import ru.otus.istyazhkina.library.domain.jpa.Author;
-import ru.otus.istyazhkina.library.domain.jpa.Book;
-import ru.otus.istyazhkina.library.domain.jpa.Comment;
-import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.domain.entity.Author;
+import ru.otus.istyazhkina.library.domain.entity.Book;
+import ru.otus.istyazhkina.library.domain.entity.Comment;
+import ru.otus.istyazhkina.library.domain.entity.Genre;
+import ru.otus.istyazhkina.library.domain.entity.User;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
 import ru.otus.istyazhkina.library.repository.BookRepository;
 import ru.otus.istyazhkina.library.repository.CommentRepository;
 import ru.otus.istyazhkina.library.repository.GenreRepository;
+import ru.otus.istyazhkina.library.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static ru.otus.istyazhkina.library.security.roles.Role.ADMIN;
+import static ru.otus.istyazhkina.library.security.roles.Role.USER;
 
 @ChangeLog(order = "001")
 public class InitMongoDBDataChangeLog {
+
 
     private final List<Author> authors = new ArrayList<>();
     private final List<Genre> genres = new ArrayList<>();
@@ -57,6 +64,12 @@ public class InitMongoDBDataChangeLog {
         commentRepository.save(new Comment("The 10 Greatest Books of All Time", books.get(0)));
         commentRepository.save(new Comment("Story about hobbit Bilbo Baggins", books.get(2)));
         commentRepository.save(new Comment("Nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction", books.get(2)));
+    }
+
+    @ChangeSet(order = "005", id = "initUsers", author = "irinastyazhkina", runAlways = true)
+    public void initUsers(UserRepository userRepository) {
+        userRepository.save(new User("1", "simple_user", "$2a$10$WSj712oJc7/f1SSpL1bA1.LkuQG9/qAQ5o9f9SkWNIW9fe/eKXv02", Set.of(USER)));
+        userRepository.save(new User("2", "admin_user", "$2a$10$lTIh4g77FK3X5Jue6x0/huW.DptxzOBreN8xzMeNWfGZNQWKW/qMe", Set.of(ADMIN)));
     }
 
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otus.istyazhkina.library.domain.jpa.Author;
+import ru.otus.istyazhkina.library.domain.entity.Author;
 import ru.otus.istyazhkina.library.domain.rest.AuthorDTO;
 import ru.otus.istyazhkina.library.exception.DataOperationException;
 import ru.otus.istyazhkina.library.service.AuthorService;

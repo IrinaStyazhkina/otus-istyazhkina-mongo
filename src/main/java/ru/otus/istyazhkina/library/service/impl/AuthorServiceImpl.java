@@ -3,7 +3,7 @@ package ru.otus.istyazhkina.library.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.istyazhkina.library.domain.jpa.Author;
+import ru.otus.istyazhkina.library.domain.entity.Author;
 import ru.otus.istyazhkina.library.exception.DataOperationException;
 import ru.otus.istyazhkina.library.exception.IllegalDeleteOperationException;
 import ru.otus.istyazhkina.library.exception.IllegalSaveOperationException;

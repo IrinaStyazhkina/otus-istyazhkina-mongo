@@ -8,10 +8,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.otus.istyazhkina.library.domain.jpa.Author;
-import ru.otus.istyazhkina.library.domain.jpa.Book;
-import ru.otus.istyazhkina.library.domain.jpa.Comment;
-import ru.otus.istyazhkina.library.domain.jpa.Genre;
+import ru.otus.istyazhkina.library.domain.entity.Author;
+import ru.otus.istyazhkina.library.domain.entity.Book;
+import ru.otus.istyazhkina.library.domain.entity.Comment;
+import ru.otus.istyazhkina.library.domain.entity.Genre;
 import ru.otus.istyazhkina.library.listener.MongoBookOperationsEventListener;
 
 import java.util.List;

@@ -20,6 +20,10 @@ body {
     color: antiquewhite;
 }
 
+.header_logout {
+    margin-left: auto;
+}
+
 .content {
     display: flex;
     justify-content: space-between;
