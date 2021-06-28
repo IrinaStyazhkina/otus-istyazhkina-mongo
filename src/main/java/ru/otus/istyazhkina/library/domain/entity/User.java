@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import ru.otus.istyazhkina.library.security.roles.Role;
+import ru.otus.istyazhkina.library.security.authorities.Authority;
 
 import java.util.Set;
 
@@ -27,7 +27,7 @@ public class User {
     @Field(name = "password")
     private String password;
 
-    @Field(name = "roles")
-    private Set<Role> roles;
+    @Field(name = "authorities")
+    private Set<Authority> authorities;
 
 }

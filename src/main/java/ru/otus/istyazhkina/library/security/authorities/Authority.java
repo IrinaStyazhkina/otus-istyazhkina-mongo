@@ -1,10 +1,10 @@
-package ru.otus.istyazhkina.library.security.roles;
+package ru.otus.istyazhkina.library.security.authorities;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public enum Role implements GrantedAuthority {
-    USER,
-    ADMIN;
+public enum Authority implements GrantedAuthority {
+    ROLE_USER,
+    ROLE_ADMIN;
 
     @Override
     public String getAuthority() {

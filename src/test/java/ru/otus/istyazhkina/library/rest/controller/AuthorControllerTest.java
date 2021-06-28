@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = AuthorController.class)
 @Import({AuthorController.class, AppExceptionHandler.class})
 @ContextConfiguration(classes = {SecurityConfiguration.class, ControllerTestConfiguration.class})
-@WithMockUser
 class AuthorControllerTest {
 
     @Autowired
@@ -40,6 +39,7 @@ class AuthorControllerTest {
     private static final String authorJson = "{\"id\":\"1\",\"name\":\"Lev\", \"surname\":\"Tolstoy\"}";
 
     @Test
+    @WithMockUser
     void shouldReturnAuthorsList() throws Exception {
         when(authorService.getAllAuthors()).thenReturn(List.of(author));
         mockMvc.perform(get("/api/authors"))
@@ -48,6 +48,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @WithMockUser
     void shouldReturnAuthorById() throws Exception {
         when(authorService.getAuthorById("1")).thenReturn(author);
         mockMvc.perform(get("/api/authors/1"))
@@ -56,7 +57,8 @@ class AuthorControllerTest {
     }
 
     @Test
-    void shouldCreateNewAuthor() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    void shouldCreateNewAuthorForAdminUser() throws Exception {
         Author newAuthor = new Author("4", "Ivan", "Turgenev");
         String newAuthorJson = "{\"id\":\"4\",\"name\":\"Ivan\", \"surname\":\"Turgenev\"}";
         when(authorService.addNewAuthor(new Author("Ivan", "Turgenev"))).thenReturn(newAuthor);
@@ -68,7 +70,17 @@ class AuthorControllerTest {
     }
 
     @Test
-    void shouldUpdateAuthor() throws Exception {
+    @WithMockUser(roles = "USER")
+    void shouldNotCreateNewAuthorForSimpleUser() throws Exception {
+        mockMvc.perform(post("/authors/add")
+                .contentType("application/json;charset=utf-8")
+                .content("{\"name\":\"Ivan\", \"surname\":\"Turgenev\"}"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldUpdateAuthorForAdminUser() throws Exception {
         when(authorService.updateAuthor("1", author)).thenReturn(author);
         mockMvc.perform(put("/authors/1")
                 .contentType("application/json;charset=utf-8")
@@ -78,12 +90,30 @@ class AuthorControllerTest {
     }
 
     @Test
-    void shouldDeleteAuthor() throws Exception {
+    @WithMockUser(roles = "USER")
+    void shouldNotUpdateAuthorForSimpleUser() throws Exception {
+        mockMvc.perform(put("/authors/1")
+                .contentType("application/json;charset=utf-8")
+                .content(authorJson))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldDeleteAuthorForAdminUser() throws Exception {
         mockMvc.perform(delete("/authors/3"))
                 .andExpect(status().is(200));
     }
 
     @Test
+    @WithMockUser(roles = "USER")
+    void shouldNotDeleteAuthorForSimpleUser() throws Exception {
+        mockMvc.perform(delete("/authors/3"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnExceptionWhileAddExistingAuthor() throws Exception {
         when(authorService.addNewAuthor(author))
                 .thenThrow(DataOperationException.class);
@@ -95,6 +125,7 @@ class AuthorControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnExceptionWhileUpdate() throws Exception {
         when(authorService.updateAuthor("2", author))
                 .thenThrow(DataOperationException.class);

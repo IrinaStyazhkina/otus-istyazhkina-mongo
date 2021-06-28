@@ -2,6 +2,7 @@ package ru.otus.istyazhkina.library.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,8 +23,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/public/**", "/img/**", "/style/**")
                 .permitAll()
-                .anyRequest()
-                .authenticated()
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/**/add").hasRole("ADMIN")
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.DELETE, "/genres/**", "/books/**", "/authors/**").hasRole("ADMIN")
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.PUT, "/genres/**", "/books/**", "/authors/**").hasRole("ADMIN")
+                .and()
+                .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .permitAll()
