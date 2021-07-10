@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static ru.otus.istyazhkina.library.security.roles.Role.ADMIN;
-import static ru.otus.istyazhkina.library.security.roles.Role.USER;
+import static ru.otus.istyazhkina.library.security.authorities.Authority.ROLE_ADMIN;
+import static ru.otus.istyazhkina.library.security.authorities.Authority.ROLE_USER;
 
 @ChangeLog(order = "001")
 public class InitMongoDBDataChangeLog {
@@ -68,8 +68,8 @@ public class InitMongoDBDataChangeLog {
 
     @ChangeSet(order = "005", id = "initUsers", author = "irinastyazhkina", runAlways = true)
     public void initUsers(UserRepository userRepository) {
-        userRepository.save(new User("1", "simple_user", "$2a$10$WSj712oJc7/f1SSpL1bA1.LkuQG9/qAQ5o9f9SkWNIW9fe/eKXv02", Set.of(USER)));
-        userRepository.save(new User("2", "admin_user", "$2a$10$lTIh4g77FK3X5Jue6x0/huW.DptxzOBreN8xzMeNWfGZNQWKW/qMe", Set.of(ADMIN)));
+        userRepository.save(new User("1", "simple_user", "$2a$10$WSj712oJc7/f1SSpL1bA1.LkuQG9/qAQ5o9f9SkWNIW9fe/eKXv02", Set.of(ROLE_USER)));
+        userRepository.save(new User("2", "admin_user", "$2a$10$lTIh4g77FK3X5Jue6x0/huW.DptxzOBreN8xzMeNWfGZNQWKW/qMe", Set.of(ROLE_ADMIN)));
     }
 
 

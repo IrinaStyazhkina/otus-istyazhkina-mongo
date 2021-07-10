@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = BookController.class)
 @Import({BookController.class, AppExceptionHandler.class})
 @ContextConfiguration(classes = {SecurityConfiguration.class, ControllerTestConfiguration.class})
-@WithMockUser
 class BookControllerTest {
 
     @Autowired
@@ -49,6 +48,7 @@ class BookControllerTest {
     private static final String bookJson = "{\"id\":\"1\",\"title\":\"Anna Karenina\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}";
 
     @Test
+    @WithMockUser
     void shouldReturnBooksList() throws Exception {
         when(bookService.getAllBooks()).thenReturn(List.of(book));
         mockMvc.perform(get("/api/books"))
@@ -57,6 +57,7 @@ class BookControllerTest {
     }
 
     @Test
+    @WithMockUser
     void shouldReturnBookById() throws Exception {
         when(bookService.getBookById("1")).thenReturn(book);
         mockMvc.perform(get("/api/books/1"))
@@ -65,7 +66,8 @@ class BookControllerTest {
     }
 
     @Test
-    void shouldCreateNewBook() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    void shouldCreateNewBookForAdminUser() throws Exception {
         Book newBook = new Book("4", "War and Peace", new Author("1", "Lev", "Tolstoy"), new Genre("1", "novel"));
         String newBookJson = "{\"id\":\"4\",\"title\":\"War and Peace\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}";
         when(authorService.getAuthorById("1")).thenReturn(new Author("1", "Lev", "Tolstoy"));
@@ -79,7 +81,17 @@ class BookControllerTest {
     }
 
     @Test
-    void shouldUpdateBook() throws Exception {
+    @WithMockUser(roles = "USER")
+    void shouldNotCreateNewBookForSimpleUser() throws Exception {
+        mockMvc.perform(post("/books/add")
+                .contentType("application/json;charset=utf-8")
+                .content("{\"title\":\"War and Peace\",\"authorDTO\":{\"id\":\"1\",\"name\":\"Lev\",\"surname\":\"Tolstoy\"},\"genreDTO\":{\"id\":\"1\",\"name\":\"novel\"}}"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldUpdateBookForAdminUser() throws Exception {
         when(bookService.updateBook("1", new Book("Anna Karenina", new Author("1", "Lev", "Tolstoy"), new Genre("1", "novel")))).thenReturn(book);
         when(authorService.getAuthorById("1")).thenReturn(new Author("1", "Lev", "Tolstoy"));
         when(genreService.getGenreById("1")).thenReturn(new Genre("1", "novel"));
@@ -91,9 +103,26 @@ class BookControllerTest {
     }
 
     @Test
-    void shouldDeleteGenre() throws Exception {
+    @WithMockUser(roles = "USER")
+    void shouldNotUpdateBookForSimpleUser() throws Exception {
+        mockMvc.perform(put("/books/1")
+                .contentType("application/json;charset=utf-8")
+                .content(bookJson))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldDeleteBookForAdminUser() throws Exception {
         mockMvc.perform(delete("/books/3"))
                 .andExpect(status().is(200));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void shouldNotDeleteBookForSimpleUser() throws Exception {
+        mockMvc.perform(delete("/books/3"))
+                .andExpect(status().is(403));
     }
 
 }

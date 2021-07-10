@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = GenreController.class)
 @Import({GenreController.class, AppExceptionHandler.class})
 @ContextConfiguration(classes = {SecurityConfiguration.class, ControllerTestConfiguration.class})
-@WithMockUser
 class GenreControllerTest {
 
     @Autowired
@@ -41,6 +40,7 @@ class GenreControllerTest {
 
 
     @Test
+    @WithMockUser
     void shouldReturnGenresList() throws Exception {
         when(genreService.getAllGenres()).thenReturn(List.of(genre));
         mockMvc.perform(get("/api/genres"))
@@ -49,6 +49,7 @@ class GenreControllerTest {
     }
 
     @Test
+    @WithMockUser
     void shouldReturnGenreById() throws Exception {
         when(genreService.getGenreById("1")).thenReturn(genre);
         mockMvc.perform(get("/api/genres/1"))
@@ -57,7 +58,8 @@ class GenreControllerTest {
     }
 
     @Test
-    void shouldCreateNewGenre() throws Exception {
+    @WithMockUser(roles = "ADMIN")
+    void shouldCreateNewGenreForAdminUser() throws Exception {
         Genre newGenre = new Genre("4", "fantasy");
         String newGenreJson = "{\"id\":\"4\",\"name\":\"fantasy\"}";
         when(genreService.addNewGenre(new Genre("fantasy"))).thenReturn(newGenre);
@@ -69,7 +71,17 @@ class GenreControllerTest {
     }
 
     @Test
-    void shouldUpdateGenre() throws Exception {
+    @WithMockUser(roles = "USER")
+    void shouldNotAllowCreateNewGenreForSimpleUser() throws Exception {
+        mockMvc.perform(post("/genres/add")
+                .contentType("application/json;charset=utf-8")
+                .content("{\"name\":\"fantasy\"}"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldUpdateGenreForAdminUser() throws Exception {
         when(genreService.updateGenre("1", genre)).thenReturn(genre);
         mockMvc.perform(put("/genres/1")
                 .contentType("application/json;charset=utf-8")
@@ -79,12 +91,30 @@ class GenreControllerTest {
     }
 
     @Test
-    void shouldDeleteGenre() throws Exception {
+    @WithMockUser(roles = "USER")
+    void shouldNotUpdateGenreForSimpleUser() throws Exception {
+        mockMvc.perform(put("/genres/1")
+                .contentType("application/json;charset=utf-8")
+                .content(genreJson))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldDeleteGenreForAdminUser() throws Exception {
         mockMvc.perform(delete("/genres/3"))
                 .andExpect(status().is(200));
     }
 
     @Test
+    @WithMockUser(roles = "USER")
+    void shouldNotDeleteGenreForSimpleUser() throws Exception {
+        mockMvc.perform(delete("/genres/3"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnExceptionWhileAddExistingGenre() throws Exception {
         when(genreService.addNewGenre(genre))
                 .thenThrow(DataOperationException.class);
@@ -96,6 +126,7 @@ class GenreControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void shouldReturnExceptionWhileUpdate() throws Exception {
         when(genreService.updateGenre("2", genre))
                 .thenThrow(DataOperationException.class);
