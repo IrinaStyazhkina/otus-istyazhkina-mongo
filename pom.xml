@@ -13,7 +13,7 @@
 
     <groupId>ru.otus.istyazhkina</groupId>
     <artifactId>otus-istyazhkina-mongo</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>otus-istyazhkina-mongo</name>
     <description>Library Application</description>
 

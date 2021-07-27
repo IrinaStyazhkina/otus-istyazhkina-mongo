@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    privileged: true
+    ports:
+      - 8080:8080
+    networks:
+      - library-nw
+    depends_on:
+      - mongo_db
+    environment:
+      - SPRING_DATA_MONGODB_DATABASE=library
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_HOST=mongo_db
+
+  mongo_db:
+    image: mongo
+    container_name: mongo_db
+    restart: always
+    ports:
+      - 27017:27017
+    networks:
+      - library-nw
+
+networks:
+  library-nw:
+
