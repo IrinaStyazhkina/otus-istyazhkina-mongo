@@ -1,6 +1,7 @@
 package ru.otus.istyazhkina.library.domain.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "author")
+@Builder
 public class Author {
 
     @Id

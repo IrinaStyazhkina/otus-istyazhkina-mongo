@@ -1,5 +1,6 @@
 package ru.otus.istyazhkina.library.service.impl;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +10,9 @@ import ru.otus.istyazhkina.library.exception.IllegalDeleteOperationException;
 import ru.otus.istyazhkina.library.exception.IllegalSaveOperationException;
 import ru.otus.istyazhkina.library.repository.AuthorRepository;
 import ru.otus.istyazhkina.library.service.AuthorService;
+import ru.otus.istyazhkina.library.utils.HystrixSleepUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -20,20 +23,46 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional(readOnly = true)
+    @HystrixCommand(commandKey = "authors", fallbackMethod = "fallbackGetAllAuthors")
     public List<Author> getAllAuthors() {
+        HystrixSleepUtil.sleepRandomly(4);
         return authorRepository.findAll();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Author getAuthorById(String id) throws DataOperationException {
-        return authorRepository.findById(id).orElseThrow(() -> new DataOperationException("Author by provided ID not found"));
+    public List<Author> fallbackGetAllAuthors() {
+        return Collections.emptyList();
     }
 
     @Override
     @Transactional(readOnly = true)
+    @HystrixCommand(commandKey = "authors", fallbackMethod = "fallbackGetAuthorById")
+    public Author getAuthorById(String id) throws DataOperationException {
+        HystrixSleepUtil.sleepRandomly(4);
+        return authorRepository.findById(id).orElseThrow(() -> new DataOperationException("Author by provided ID not found"));
+    }
+
+    public Author fallbackGetAuthorById(String id) {
+        return Author.builder()
+                .id(id)
+                .name("N/A")
+                .surname("N/A")
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @HystrixCommand(commandKey = "authors", fallbackMethod = "fallbackGetAuthorByName")
     public Author getAuthorByName(String name, String surname) throws DataOperationException {
+        HystrixSleepUtil.sleepRandomly(4);
         return authorRepository.findByNameAndSurname(name, surname).orElseThrow(() -> new DataOperationException("No author found by provided name"));
+    }
+
+    public Author fallbackGetAuthorByName(String name, String surname) {
+        return Author.builder()
+                .id("N/A")
+                .name(name)
+                .surname(surname)
+                .build();
     }
 
     @Override

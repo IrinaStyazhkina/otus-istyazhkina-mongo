@@ -13,3 +13,21 @@ mongock:
   runner-type: "InitializingBean"
   change-logs-scan-package:
     - ru.otus.istyazhkina.library.changelogs
+
+hystrix:
+  command:
+    genres:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 2000
+    authors:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+    books:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 4000
