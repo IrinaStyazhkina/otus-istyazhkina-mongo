@@ -1,5 +1,6 @@
 package ru.otus.istyazhkina.library.service.impl;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +10,9 @@ import ru.otus.istyazhkina.library.exception.IllegalDeleteOperationException;
 import ru.otus.istyazhkina.library.exception.IllegalSaveOperationException;
 import ru.otus.istyazhkina.library.repository.GenreRepository;
 import ru.otus.istyazhkina.library.service.GenreService;
+import ru.otus.istyazhkina.library.utils.HystrixSleepUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -20,20 +23,44 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional(readOnly = true)
+    @HystrixCommand(commandKey = "genres", fallbackMethod = "fallbackGetAllGenres")
     public List<Genre> getAllGenres() {
+        HystrixSleepUtil.sleepRandomly(3);
         return genreRepository.findAll();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Genre getGenreById(String id) throws DataOperationException {
-        return genreRepository.findById(id).orElseThrow(() -> new DataOperationException("No genre found by provided id"));
+    public List<Genre> fallbackGetAllGenres() {
+        return Collections.emptyList();
     }
 
     @Override
     @Transactional(readOnly = true)
+    @HystrixCommand(commandKey = "genres", fallbackMethod = "fallbackGetGenreById")
+    public Genre getGenreById(String id) throws DataOperationException {
+        HystrixSleepUtil.sleepRandomly(3);
+        return genreRepository.findById(id).orElseThrow(() -> new DataOperationException("No genre found by provided id"));
+    }
+
+    public Genre fallbackGetGenreById(String id) {
+        return Genre.builder()
+                .id(id)
+                .name("N/A")
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @HystrixCommand(commandKey = "genres", fallbackMethod = "fallbackGetGenreByName")
     public Genre getGenreByName(String name) throws DataOperationException {
+        HystrixSleepUtil.sleepRandomly(3);
         return genreRepository.findByName(name).orElseThrow(() -> new DataOperationException("No genre found by provided name"));
+    }
+
+    public Genre fallbackGetGenreByName(String name) {
+        return Genre.builder()
+                .id("N/A")
+                .name(name)
+                .build();
     }
 
     @Override
